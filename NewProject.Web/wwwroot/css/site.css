@@ -1,0 +1,2 @@
+/* Shared framework defaults only. Storefront styling lives in store-*.css modules. */
+html { scroll-behavior: smooth; }

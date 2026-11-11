@@ -1,0 +1,234 @@
+﻿@page
+@model NewProject.UI.Pages.CheckoutModel
+
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "_StoreLayout";
+}
+
+<div class="shopping-shell">
+
+    <div class="shopping-breadcrumb">
+        <a asp-page="/Index">Home</a>
+        <span>/</span>
+        <a asp-page="/Cart">Cart</a>
+        <span>/</span>
+        <span>Checkout</span>
+    </div>
+
+    <div class="shopping-title-row">
+        <div>
+            <span class="shopping-eyebrow">ALMOST THERE</span>
+            <h1>Checkout</h1>
+            <p>Complete your details to place your order.</p>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="shopping-notice error-notice">
+            <i data-lucide="alert-circle"></i>
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="checkout-steps">
+
+        <div class="checkout-step completed">
+            <span><i data-lucide="check"></i></span>
+            <div>
+                <strong>Shopping Cart</strong>
+                <small>Products selected</small>
+            </div>
+        </div>
+
+        <div class="checkout-step active">
+            <span>02</span>
+            <div>
+                <strong>Checkout</strong>
+                <small>Delivery information</small>
+            </div>
+        </div>
+
+        <div class="checkout-step">
+            <span>03</span>
+            <div>
+                <strong>Confirmation</strong>
+                <small>Order placed</small>
+            </div>
+        </div>
+
+    </div>
+
+
+    <form method="post" class="checkout-layout">
+
+        <div class="checkout-left">
+
+            <section class="checkout-card">
+
+                <div class="checkout-card-heading">
+
+                    <div class="checkout-heading-icon">
+                        <i data-lucide="map-pin"></i>
+                    </div>
+
+                    <div>
+                        <h2>Delivery Information</h2>
+                        <p>Where should we deliver your order?</p>
+                    </div>
+
+                </div>
+
+                <div class="checkout-field">
+
+                    <label asp-for="Input.ShippingAddress">
+                        Full Delivery Address
+                        <span>*</span>
+                    </label>
+
+                    <textarea asp-for="Input.ShippingAddress"
+                              rows="5"
+                              placeholder="Enter house number, road, area, city and postal code..."
+                              required></textarea>
+
+                    <span asp-validation-for="Input.ShippingAddress"
+                          class="validation-message"></span>
+
+                    <small class="field-hint">
+                        <i data-lucide="info"></i>
+                        Please provide an accurate address for successful delivery.
+                    </small>
+
+                </div>
+
+            </section>
+
+
+            <section class="checkout-card">
+
+                <div class="checkout-card-heading">
+
+                    <div class="checkout-heading-icon">
+                        <i data-lucide="wallet"></i>
+                    </div>
+
+                    <div>
+                        <h2>Payment Method</h2>
+                        <p>Choose your preferred payment option.</p>
+                    </div>
+
+                </div>
+
+                <div class="payment-option selected">
+
+                    <div class="payment-radio">
+                        <span></span>
+                    </div>
+
+                    <div class="payment-method-icon">
+                        <i data-lucide="banknote"></i>
+                    </div>
+
+                    <div class="payment-method-info">
+                        <strong>Cash on Delivery</strong>
+                        <p>Pay when your order arrives at your doorstep.</p>
+                    </div>
+
+                    <span class="payment-selected-label">
+                        Selected
+                    </span>
+
+                </div>
+
+                <div class="payment-note">
+                    <i data-lucide="info"></i>
+                    Currently, Cash on Delivery is available for this checkout.
+                </div>
+
+            </section>
+
+
+            <a asp-page="/Cart" class="checkout-back-link">
+                <i data-lucide="arrow-left"></i>
+                Return to Cart
+            </a>
+
+        </div>
+
+
+        <aside class="shopping-summary checkout-summary">
+
+            <div class="summary-heading">
+                <i data-lucide="shopping-bag"></i>
+                <h2>Your Order</h2>
+            </div>
+
+            <div class="checkout-product-list">
+
+                @foreach (var item in Model.Cart.Items)
+                {
+                    <div class="checkout-product">
+
+                        
+                        <div class="checkout-product-image">
+                            <i data-lucide="package"></i>
+                            <span>@item.Quantity</span>
+                        </div>
+
+
+                        <div class="checkout-product-info">
+                            <strong>@item.ProductName</strong>
+                            <span>৳ @item.UnitPrice.ToString("N2") each</span>
+                        </div>
+
+                        <strong class="checkout-product-price">
+                            ৳ @item.Subtotal.ToString("N2")
+                        </strong>
+
+                    </div>
+                }
+
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-detail">
+                <span>Subtotal</span>
+                <strong>৳ @Model.Cart.Total.ToString("N2")</strong>
+            </div>
+
+            <div class="summary-detail">
+                <span>Shipping</span>
+                <span class="summary-muted">Not included</span>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-grand-total">
+                <span>Total</span>
+                <strong>৳ @Model.Cart.Total.ToString("N2")</strong>
+            </div>
+
+            <button type="submit"
+                    class="shopping-primary-button place-order-button">
+
+                Place Your Order
+                <i data-lucide="arrow-right"></i>
+
+            </button>
+
+            <div class="summary-security">
+                <i data-lucide="shield-check"></i>
+                Secure checkout with Pickaboo.
+            </div>
+
+        </aside>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

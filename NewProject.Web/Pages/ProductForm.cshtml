@@ -1,0 +1,247 @@
+﻿@page "/products/form/{id:int?}"
+@model NewProject.UI.Pages.ProductFormModel
+
+@{
+    ViewData["Title"] = RouteData.Values["id"] is null
+        ? "Add Product"
+        : "Edit Product";
+
+    Layout = "_AdminLayout";
+
+    var id = RouteData.Values["id"];
+}
+
+<div class="admin-shell">
+
+    <aside class="admin-sidebar">
+
+        <a asp-page="/Index" class="sidebar-brand">
+            Pickaboo <span>Admin</span>
+        </a>
+
+        <div class="sidebar-label">MANAGEMENT</div>
+
+        <a class="sidebar-link active" asp-page="/Dashboard">
+            Products
+        </a>
+
+        <div class="sidebar-bottom">
+
+            <a class="text-link" asp-page="/Dashboard">
+                ← Back to products
+            </a>
+
+        </div>
+
+    </aside>
+
+    <main class="admin-main form-main">
+
+        <header class="admin-topbar">
+
+            <div>
+                <span class="eyebrow">PRODUCT CATALOGUE</span>
+
+                <h1>
+                    @(id is null ? "Add Product" : "Edit Product")
+                </h1>
+            </div>
+
+            <a class="secondary-button" asp-page="/Dashboard">
+                Cancel
+            </a>
+
+        </header>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="notice error">
+                @Model.ErrorMessage
+            </div>
+        }
+
+        <div asp-validation-summary="ModelOnly"
+             class="notice error">
+        </div>
+
+        <section class="product-panel form-panel">
+
+            <div class="panel-heading">
+                <div>
+                    <h2>Product Information</h2>
+                    <p>
+                        Enter the product details below.
+                    </p>
+                </div>
+            </div>
+
+            <form method="post" class="product-form">
+
+                <div class="form-grid">
+
+                    <div class="form-field full">
+
+                        <label asp-for="Input.Name">
+                            Product Name
+                        </label>
+
+                        <input asp-for="Input.Name"
+                               placeholder="Enter product name" />
+
+                        <span asp-validation-for="Input.Name"></span>
+
+                    </div>
+
+                    <div class="form-field">
+
+                        <label asp-for="Input.CategoryId">
+                            Category
+                        </label>
+
+                        <select asp-for="Input.CategoryId">
+
+                            <option value="0">Select Category</option>
+
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.Id">
+                                    @category.Name
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="Input.CategoryId"></span>
+
+                    </div>
+
+                    <div class="form-field">
+
+                        <label asp-for="Input.BrandId">
+                            Brand
+                        </label>
+
+                        <select asp-for="Input.BrandId">
+
+                            <option value="0">Select Brand</option>
+
+                            @foreach (var brand in Model.Brands)
+                            {
+                                <option value="@brand.Id">
+                                    @brand.Name
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="Input.BrandId"></span>
+
+                    </div>
+
+                    <div class="form-field">
+
+                        <label asp-for="Input.Price">
+                            Price (৳)
+                        </label>
+
+                        <input asp-for="Input.Price"
+                               type="number"
+                               min="0.01"
+                               step="0.01"
+                               placeholder="0.00" />
+
+                        <span asp-validation-for="Input.Price"></span>
+
+                    </div>
+
+                    <div class="form-field">
+
+                        <label asp-for="Input.StockQuantity">
+                            Stock Quantity
+                        </label>
+
+                        <input asp-for="Input.StockQuantity"
+                               type="number"
+                               min="0"
+                               step="1" />
+
+                        <span asp-validation-for="Input.StockQuantity"></span>
+
+                    </div>
+
+                    <div class="form-field full">
+
+                        <label asp-for="Input.Description">
+                            Description
+                        </label>
+
+                        <textarea asp-for="Input.Description"
+                                  rows="5"
+                                  placeholder="Enter product description"></textarea>
+
+                        <span asp-validation-for="Input.Description"></span>
+
+                    </div>
+
+                    <div class="form-field full">
+
+                        <label asp-for="Input.ImageUrl">
+                            Product Image URL
+                        </label>
+
+                        <input asp-for="Input.ImageUrl"
+                               type="text"
+                               placeholder="/images/products/product.jpg" />
+
+                        <span asp-validation-for="Input.ImageUrl"></span>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.ExistingImageUrl))
+                        {
+                            <div class="current-image">
+
+                                <p>Product Image Preview</p>
+
+                                <img class="existing-product-image"
+                                     src="@Model.ExistingImageUrl"
+                                     alt="Product image" />
+
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="form-field full">
+
+                        <label class="checkbox-label">
+                            <input asp-for="Input.IsActive" />
+                            Active Product
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <a class="secondary-button"
+                       asp-page="/Dashboard">
+                        Cancel
+                    </a>
+
+                    <button class="primary-button" type="submit">
+                        @(id is null ? "Save Product" : "Save Changes")
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

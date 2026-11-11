@@ -1,0 +1,269 @@
+﻿@page
+@model NewProject.UI.Pages.OrderDetailsModel
+
+@{
+    ViewData["Title"] = "Order Details";
+    Layout = "_StoreLayout";
+}
+
+<div class="shopping-shell">
+
+    <div class="shopping-breadcrumb">
+        <a asp-page="/Index">Home</a>
+        <span>/</span>
+        <a asp-page="/Order">My Orders</a>
+        <span>/</span>
+        <span>Order Details</span>
+    </div>
+
+
+    @if (Model.Order != null)
+    {
+        <div class="shopping-title-row">
+
+            <div>
+                <span class="shopping-eyebrow">PURCHASE INFORMATION</span>
+                <h1>Order Details</h1>
+                <p>Review your order and delivery information.</p>
+            </div>
+
+            <a asp-page="/Order" class="continue-shopping">
+                <i data-lucide="arrow-left"></i>
+                Back to Orders
+            </a>
+
+        </div>
+
+
+        <section class="order-details-banner">
+
+            <div class="order-details-banner-icon">
+                <i data-lucide="package-check"></i>
+            </div>
+
+            <div class="order-details-banner-info">
+
+                <span>ORDER NUMBER</span>
+                <h2>@Model.Order.OrderNumber</h2>
+
+                <p>
+                    Placed on
+                    @Model.Order.CreatedAtUtc.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")
+                </p>
+
+            </div>
+
+            <div class="order-details-banner-status">
+
+                <span>ORDER STATUS</span>
+
+                <strong class="order-status-badge">
+                    <span class="status-dot"></span>
+                    @Model.Order.Status
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <div class="order-details-layout">
+
+            <div class="order-details-main">
+
+                <section class="order-details-card">
+
+                    <div class="order-details-heading">
+                        <div class="checkout-heading-icon">
+                            <i data-lucide="shopping-bag"></i>
+                        </div>
+
+                        <div>
+                            <h2>Ordered Products</h2>
+                            <p>@Model.Order.Items.Sum(x => x.Quantity) items in this order</p>
+                        </div>
+                    </div>
+
+
+                    <div class="ordered-products-list">
+
+                        @foreach (var item in Model.Order.Items)
+                        {
+                            <div class="ordered-product-row">
+
+                                <div class="ordered-product-icon">
+                                    <i data-lucide="package"></i>
+                                </div>
+
+                                <div class="ordered-product-info">
+                                    <h3>@item.ProductName</h3>
+                                    <span>Quantity: @item.Quantity</span>
+                                    <span>Unit price: ৳ @item.UnitPrice.ToString("N2")</span>
+                                </div>
+
+                                <strong class="ordered-product-total">
+                                    ৳ @item.Subtotal.ToString("N2")
+                                </strong>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </section>
+
+
+                <section class="order-details-card">
+
+                    <div class="order-details-heading">
+
+                        <div class="checkout-heading-icon">
+                            <i data-lucide="map-pin"></i>
+                        </div>
+
+                        <div>
+                            <h2>Delivery Information</h2>
+                            <p>Your order delivery address.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="delivery-address-box">
+
+                        <div class="delivery-address-icon">
+                            <i data-lucide="house"></i>
+                        </div>
+
+                        <div>
+                            <strong>Shipping Address</strong>
+                            <p>@Model.Order.ShippingAddress</p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="order-details-card">
+
+                    <div class="order-details-heading">
+
+                        <div class="checkout-heading-icon">
+                            <i data-lucide="wallet"></i>
+                        </div>
+
+                        <div>
+                            <h2>Payment Information</h2>
+                            <p>Payment method used for this order.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="payment-information-row">
+
+                        <div class="payment-method-icon">
+                            <i data-lucide="banknote"></i>
+                        </div>
+
+                        <div>
+                            <strong>@Model.Order.PaymentMethod</strong>
+                            <p>Selected payment method</p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <aside class="shopping-summary order-summary-details">
+
+                <div class="summary-heading">
+                    <i data-lucide="receipt"></i>
+                    <h2>Order Summary</h2>
+                </div>
+
+
+                <div class="summary-detail">
+                    <span>Total Products</span>
+                    <strong>@Model.Order.Items.Sum(x => x.Quantity)</strong>
+                </div>
+
+
+                <div class="summary-detail">
+                    <span>Order Items</span>
+                    <strong>@Model.Order.Items.Count</strong>
+                </div>
+
+
+                <div class="summary-divider"></div>
+
+
+                <div class="order-summary-products">
+
+                    @foreach (var item in Model.Order.Items)
+                    {
+                        <div>
+                            <span>@item.ProductName × @item.Quantity</span>
+                            <strong>৳ @item.Subtotal.ToString("N2")</strong>
+                        </div>
+                    }
+
+                </div>
+
+
+                <div class="summary-divider"></div>
+
+
+                <div class="summary-grand-total">
+                    <span>Order Total</span>
+                    <strong>৳ @Model.Order.TotalAmount.ToString("N2")</strong>
+                </div>
+
+
+                <div class="order-summary-payment">
+
+                    <i data-lucide="credit-card"></i>
+
+                    <div>
+                        <strong>Payment Method</strong>
+                        <span>@Model.Order.PaymentMethod</span>
+                    </div>
+
+                </div>
+
+
+                <a asp-page="/Order"
+                   class="order-back-button">
+
+                    <i data-lucide="arrow-left"></i>
+                    Back to My Orders
+
+                </a>
+
+            </aside>
+
+        </div>
+    }
+    else
+    {
+        <div class="shopping-empty-modern">
+
+            <div class="empty-cart-icon">
+                <i data-lucide="file-search"></i>
+            </div>
+
+            <h2>Order not found</h2>
+
+            <p>We couldn't find the requested order information.</p>
+
+            <a asp-page="/Order" class="shopping-primary-button empty-shop-button">
+                View My Orders
+                <i data-lucide="arrow-right"></i>
+            </a>
+
+        </div>
+    }
+
+</div>

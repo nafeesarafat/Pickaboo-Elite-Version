@@ -1,0 +1,200 @@
+﻿@page
+@model NewProject.UI.Pages.OrdersModel
+
+@{
+    ViewData["Title"] = "My Orders";
+    Layout = "_StoreLayout";
+}
+
+<div class="shopping-shell">
+
+    <div class="shopping-breadcrumb">
+        <a asp-page="/Index">Home</a>
+        <span>/</span>
+        <span>My Orders</span>
+    </div>
+
+    <div class="shopping-title-row">
+
+        <div>
+            <span class="shopping-eyebrow">YOUR PURCHASES</span>
+            <h1>My Orders</h1>
+            <p>Keep track of your purchases and order history.</p>
+        </div>
+
+        <a asp-page="/Index" class="continue-shopping">
+            <i data-lucide="shopping-bag"></i>
+            Continue Shopping
+        </a>
+
+    </div>
+
+
+    @if (TempData["OrderNumber"] != null)
+    {
+        <div class="shopping-notice success-notice">
+
+            <i data-lucide="check-circle"></i>
+
+            <div>
+                <strong>Order placed successfully!</strong>
+                <p>Your order number is @TempData["OrderNumber"]</p>
+            </div>
+
+        </div>
+    }
+
+
+    @if (Model.Orders.Any())
+    {
+        <div class="orders-overview">
+
+            <div class="orders-overview-card">
+                <div class="overview-icon purple-icon">
+                    <i data-lucide="package"></i>
+                </div>
+                <div>
+                    <span>Total Orders</span>
+                    <strong>@Model.Orders.Count</strong>
+                </div>
+            </div>
+
+            <div class="orders-overview-card">
+                <div class="overview-icon green-icon">
+                    <i data-lucide="wallet"></i>
+                </div>
+                <div>
+                    <span>Total Spent</span>
+                    <strong>
+                        ৳ @Model.Orders.Sum(x => x.TotalAmount).ToString("N2")
+                    </strong>
+                </div>
+            </div>
+
+        </div>
+
+
+        <section class="orders-section">
+
+            <div class="orders-section-heading">
+                <div>
+                    <h2>Order History</h2>
+                    <p>All your recent purchases in one place.</p>
+                </div>
+
+                <span class="orders-total-count">
+                    @Model.Orders.Count Orders
+                </span>
+            </div>
+
+
+            <div class="orders-list-modern">
+
+                @foreach (var order in Model.Orders)
+                {
+                    <article class="order-modern-card">
+
+                        <div class="order-modern-top">
+
+                            <div class="order-number-block">
+
+                                <div class="order-icon">
+                                    <i data-lucide="package-check"></i>
+                                </div>
+
+                                <div>
+                                    <span>ORDER NUMBER</span>
+                                    <h3>@order.OrderNumber</h3>
+                                </div>
+
+                            </div>
+
+                            <span class="order-status-badge">
+                                <span class="status-dot"></span>
+                                @order.Status
+                            </span>
+
+                        </div>
+
+
+                        <div class="order-modern-details">
+
+                            <div class="order-detail-item">
+                                <span>Order Date</span>
+                                <strong>
+                                    @order.CreatedAtUtc.ToLocalTime().ToString("dd MMM yyyy")
+                                </strong>
+                            </div>
+
+                            <div class="order-detail-item">
+                                <span>Items</span>
+                                <strong>@order.Items.Sum(x => x.Quantity) Products</strong>
+                            </div>
+
+                            <div class="order-detail-item">
+                                <span>Payment</span>
+                                <strong>@order.PaymentMethod</strong>
+                            </div>
+
+                            <div class="order-detail-item">
+                                <span>Total Amount</span>
+                                <strong class="order-amount">
+                                    ৳ @order.TotalAmount.ToString("N2")
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="order-modern-footer">
+
+                            <span>
+                                <i data-lucide="map-pin"></i>
+                                @order.ShippingAddress
+                            </span>
+
+                            <a asp-page="/OrderDetails"
+                               asp-route-id="@order.Id"
+                               class="order-view-button">
+
+                                View Order Details
+                                <i data-lucide="arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </article>
+                }
+
+            </div>
+
+        </section>
+    }
+    else
+    {
+        <div class="shopping-empty-modern">
+
+            <div class="empty-cart-icon">
+                <i data-lucide="package-search"></i>
+            </div>
+
+            <h2>No orders found</h2>
+
+            <p>
+                You haven't placed any orders yet.
+                Your order history will appear here after your first purchase.
+            </p>
+
+            <a asp-page="/Index"
+               class="shopping-primary-button empty-shop-button">
+
+                Start Shopping
+                <i data-lucide="arrow-right"></i>
+
+            </a>
+
+        </div>
+    }
+
+</div>

@@ -1,0 +1,62 @@
+﻿@page "/verify"
+@model NewProject.UI.Pages.VerificationModel
+
+@{
+    ViewData["Title"] = "Email Verification";
+    Layout = "_AuthLayout";
+}
+
+<div class="auth-card">
+
+    <a asp-page="/RegistrationPage"
+       class="auth-back">
+        &#8249;
+    </a>
+
+    <div class="auth-heading">
+        <h1>Verify Email</h1>
+        <p>
+            Enter the six-digit verification code
+            sent to your email address.
+        </p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="auth-message auth-error">
+            @Model.Message
+        </div>
+    }
+
+    <form method="post" class="auth-form">
+
+        <input asp-for="Email"
+               type="email"
+               class="auth-field"
+               placeholder="Email address"
+               required />
+
+        <input asp-for="Code"
+               class="auth-field"
+               placeholder="Six-digit verification code"
+               inputmode="numeric"
+               pattern="[0-9]{6}"
+               maxlength="6"
+               autocomplete="one-time-code"
+               required />
+
+        <button type="submit" class="auth-button">
+            Verify Email
+        </button>
+
+    </form>
+
+    <div class="auth-footer">
+        Already verified?
+
+        <a asp-page="/LoginPage" class="auth-link">
+            Login
+        </a>
+    </div>
+
+</div>

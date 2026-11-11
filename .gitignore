@@ -1,0 +1,20 @@
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+
+# .NET build files
+bin/
+obj/
+
+# Logs
+*.log
+
+# Environment and secrets
+.env
+.env.*
+
+# Node.js (if applicable)
+node_modules/
+dist/

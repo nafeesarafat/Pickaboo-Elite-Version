@@ -1,0 +1,150 @@
+﻿@page
+@model NewProject.UI.Pages.AccountModel
+
+@{
+    ViewData["Title"] = "My Account";
+    Layout = "_StoreLayout";
+}
+
+<div class="shopping-shell account-page">
+
+    <div class="shopping-breadcrumb">
+        <a asp-page="/Index">Home</a>
+        <span>/</span>
+        <span>My Account</span>
+    </div>
+
+    <div class="account-heading">
+        <div>
+            <span class="shopping-eyebrow">YOUR ACCOUNT</span>
+            <h1>My Account</h1>
+            <p>Manage your personal information and account settings.</p>
+        </div>
+        <div class="account-heading-icon">
+            <i data-lucide="user-round"></i>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] is string success)
+    {
+        <div class="shopping-success">@success</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Message))
+    {
+        <div class="shopping-alert">@Model.Message</div>
+    }
+
+    <div class="account-layout">
+
+        <aside class="account-sidebar">
+
+            <div class="account-user">
+                <div class="account-avatar">
+                    @(!string.IsNullOrWhiteSpace(Model.Input.FullName)
+                        ? Model.Input.FullName.Substring(0, 1).ToUpperInvariant()
+                        : "U")
+                </div>
+
+                <div>
+                    <strong>@Model.Input.FullName</strong>
+                    <span>Customer Account</span>
+                </div>
+            </div>
+
+            <nav class="account-navigation">
+
+                <a asp-page="/Account" class="account-nav-link active">
+                    <i data-lucide="user-round"></i>
+                    Personal Information
+                </a>
+
+                <a asp-page="/Order" class="account-nav-link">
+                    <i data-lucide="package"></i>
+                    My Orders
+                </a>
+
+                <a asp-page="/ChangePassword" class="account-nav-link">
+                    <i data-lucide="lock"></i>
+                    Change Password
+                </a>
+
+                <a asp-page="/Cart" class="account-nav-link">
+                    <i data-lucide="shopping-cart"></i>
+                    Shopping Cart
+                </a>
+
+            </nav>
+
+            <div class="account-logout">
+
+                <form method="post" asp-page-handler="Logout">
+                    <button type="submit">
+                        <i data-lucide="log-out"></i>
+                        Logout
+                    </button>
+                </form>
+
+            </div>
+
+        </aside>
+
+        <section class="account-content">
+
+            <div class="account-section-heading">
+                <div>
+                    <h2>Personal Information</h2>
+                    <p>Update your account details below.</p>
+                </div>
+
+                <i data-lucide="user-round"></i>
+            </div>
+
+            <form method="post" class="account-form">
+
+                <div class="account-field">
+
+                    <label asp-for="Input.FullName">
+                        Full Name
+                    </label>
+
+                    <input asp-for="Input.FullName"
+                           placeholder="Enter your full name" />
+
+                    <span asp-validation-for="Input.FullName"
+                          class="validation-message"></span>
+
+                </div>
+
+                <div class="account-field">
+
+                    <label>Email Address</label>
+
+                    <input value="@Model.Email" readonly />
+
+                    <small>
+                        Your registered email address cannot be changed here.
+                    </small>
+
+                </div>
+
+                <div class="account-form-actions">
+
+                    <button type="submit" class="account-save-button">
+                        <i data-lucide="save"></i>
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

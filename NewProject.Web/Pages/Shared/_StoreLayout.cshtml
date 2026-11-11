@@ -1,0 +1,269 @@
+@using Microsoft.AspNetCore.Http
+
+@{
+    var token = Context.Session.GetString("AuthToken");
+    var role = Context.Session.GetString("UserRole");
+    var userName = Context.Session.GetString("UserName");
+
+    bool isCustomer =
+        !string.IsNullOrWhiteSpace(token) &&
+        string.Equals(role, "Customer",
+            StringComparison.OrdinalIgnoreCase);
+
+    bool isAdmin =
+        !string.IsNullOrWhiteSpace(token) &&
+        string.Equals(role, "Admin",
+            StringComparison.OrdinalIgnoreCase);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Pickaboo</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <link rel="stylesheet"
+          href="~/css/store.css"
+          asp-append-version="true" />
+    <link rel="stylesheet"
+          href="~/css/store-shopping.css"
+          asp-append-version="true" />
+</head>
+
+<body class="store-body">
+
+    <!-- HEADER -->
+    <header class="store-header">
+
+        <div class="header-inner">
+
+            <a asp-page="/Index" class="store-logo">
+                <span class="logo-icon">
+                    <i data-lucide="shopping-bag"></i>
+                </span>
+                Pickaboo
+            </a>
+
+
+            <nav class="main-navigation">
+
+                <a asp-page="/Index" class="nav-link active">
+                    Home
+                </a>
+
+                <a asp-page="/Index"
+                   asp-fragment="products"
+                   class="nav-link">
+                    Products
+                </a>
+
+                <a asp-page="/Categories" class="nav-link">
+                    Categories
+                </a>
+
+                <a asp-page="/Index"
+                   asp-fragment="about"
+                   class="nav-link">
+                    About
+                </a>
+
+                <a asp-page="/Index"
+                   asp-fragment="contact"
+                   class="nav-link">
+                    Contact
+                </a>
+
+            </nav>
+
+
+            <form method="get"
+                  asp-page="/Index"
+                  class="header-search">
+
+                <i data-lucide="search"></i>
+
+                <input type="search"
+                       name="Search"
+                       value="@Context.Request.Query["Search"]"
+                       placeholder="Search products..." />
+
+                <button type="submit" aria-label="Search">
+                    <i data-lucide="arrow-right"></i>
+                </button>
+
+            </form>
+
+
+            <div class="header-actions">
+
+                @if (isCustomer)
+                {
+                    <a asp-page="/Account"
+                       class="icon-action"
+                       title="My Account">
+                        <i data-lucide="user-round"></i>
+                    </a>
+
+                    <a asp-page="/Cart"
+                       class="icon-action cart-action"
+                       title="Shopping Cart">
+                        <i data-lucide="shopping-cart"></i>
+                    </a>
+                }
+                else if (isAdmin)
+                {
+                    <a asp-page="/Dashboard"
+                       class="icon-action"
+                       title="Admin Dashboard">
+                        <i data-lucide="layout-dashboard"></i>
+                    </a>
+                }
+                else
+                {
+                    <a asp-page="/LoginPage"
+                       class="icon-action"
+                       title="Sign In">
+                        <i data-lucide="user-round"></i>
+                    </a>
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- MOBILE NAVIGATION -->
+        <nav class="mobile-navigation">
+
+            <a asp-page="/Index">Home</a>
+
+            <a asp-page="/Categories">Categories</a>
+
+            <a asp-page="/Index" asp-fragment="products">
+                Products
+            </a>
+
+            @if (isCustomer)
+            {
+                <a asp-page="/Order">Orders</a>
+            }
+
+            @if (isAdmin)
+            {
+                <a asp-page="/Dashboard">Dashboard</a>
+            }
+
+        </nav>
+
+    </header>
+
+
+    <!-- MAIN CONTENT -->
+    <main>
+        @RenderBody()
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="store-footer" id="contact">
+
+        <div class="footer-inner">
+
+            <div class="footer-brand">
+
+                <a asp-page="/Index" class="store-logo footer-logo">
+                    <span class="logo-icon">
+                        <i data-lucide="shopping-bag"></i>
+                    </span>
+                    Pickaboo
+                </a>
+
+                <p>
+                    Shop smarter. Live better.
+                    Discover products you love.
+                </p>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Quick Links</h4>
+
+                <a asp-page="/Index">Home</a>
+                <a asp-page="/Index" asp-fragment="products">Products</a>
+                <a asp-page="/Categories">Categories</a>
+                <a asp-page="/Brands">Brands</a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>My Account</h4>
+
+                @if (isCustomer)
+                {
+                    <a asp-page="/Account">My Profile</a>
+                    <a asp-page="/Cart">Shopping Cart</a>
+                    <a asp-page="/Order">My Orders</a>
+                }
+                else
+                {
+                    <a asp-page="/LoginPage">Sign In</a>
+                    <a asp-page="/RegistrationPage">Register</a>
+                }
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Information</h4>
+
+                <a asp-page="/Privacy">Privacy Policy</a>
+                <a asp-page="/Index" asp-fragment="about">About Us</a>
+                <a asp-page="/Index" asp-fragment="contact">Contact</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+            <p>
+                © @DateTime.UtcNow.Year Pickaboo.
+                All rights reserved.
+            </p>
+
+            <span>Designed for better shopping.</span>
+        </div>
+
+    </footer>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            });
+    </script>
+
+</body>
+</html>

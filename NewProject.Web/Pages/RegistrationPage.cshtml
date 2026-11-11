@@ -1,0 +1,110 @@
+﻿@page "/registration"
+@model NewProject.UI.Pages.RegistrationPageModel
+
+@{
+    ViewData["Title"] = "Create Account";
+    Layout = "_AuthLayout";
+}
+
+<div class="auth-card">
+
+    <a asp-page="/LoginPage"
+       class="auth-back"
+       aria-label="Back">
+        &#8249;
+    </a>
+
+    <div class="auth-heading">
+        <h1>Create Account</h1>
+        <p>
+            Create a new account to enjoy seamless access to our services.
+        </p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="auth-message auth-error">
+            @Model.Message
+        </div>
+    }
+
+    <div asp-validation-summary="All"
+         class="auth-message auth-error">
+    </div>
+
+    <form method="post" class="auth-form">
+
+        <input asp-for="FullName"
+               class="auth-field"
+               placeholder="Full Name"
+               autocomplete="name"
+               required
+               maxlength="100" />
+
+        <span asp-validation-for="FullName"></span>
+
+        <input asp-for="Email"
+               type="email"
+               class="auth-field"
+               placeholder="Email address"
+               autocomplete="email"
+               required />
+
+        <span asp-validation-for="Email"></span>
+
+        <div class="auth-password">
+
+            <input asp-for="Password"
+                   type="password"
+                   id="registerPassword"
+                   class="auth-field"
+                   placeholder="Password"
+                   autocomplete="new-password"
+                   minlength="8"
+                   maxlength="128"
+                   required />
+
+            <button type="button"
+                    class="auth-toggle"
+                    data-target="registerPassword">
+                Show
+            </button>
+
+        </div>
+
+        @* <div class="auth-password">
+
+            <input asp-for="ConfirmPassword"
+                   type="password"
+                   id="confirmPassword"
+                   class="auth-field"
+                   placeholder="Confirm Password"
+                   autocomplete="new-password"
+                   required />
+
+            <button type="button"
+                    class="auth-toggle"
+                    data-target="confirmPassword">
+                Show
+            </button> *@
+
+        @* </div>
+
+        <span asp-validation-for="ConfirmPassword"></span> *@
+
+        <button type="submit" class="auth-button">
+            Create Account
+        </button>
+
+    </form>
+
+    <div class="auth-footer">
+        Already have an account?
+
+        <a asp-page="/LoginPage"
+           class="auth-link">
+            Sign In
+        </a>
+    </div>
+
+</div>

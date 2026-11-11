@@ -1,0 +1,312 @@
+﻿@page
+@model NewProject.UI.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Home";
+    Layout = "_StoreLayout";
+}
+
+<div class="store-container">
+
+    <!-- HERO BANNER -->
+    <section class="hero-banner">
+
+        <div class="hero-copy">
+            <span class="hero-badge">
+                <i data-lucide="sparkles"></i>
+                Special Offer
+            </span>
+
+            <h1>
+                Upgrade Your
+                <span>Lifestyle</span>
+            </h1>
+
+            <p>
+                Shop the latest trends with unbeatable prices.
+                Discover your favorite products at Pickaboo.
+            </p>
+
+            <a href="#products" class="primary-button">
+                Shop Now
+                <i data-lucide="arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="hero-visual">
+            <img src="~/images/hero-products.png"
+                 alt="Featured electronics"
+                 asp-append-version="true" />
+        </div>
+
+        <div class="hero-dots">
+            <span class="active"></span>
+            <span></span>
+            <span></span>
+        </div>
+
+    </section>
+
+
+    <!-- CATEGORY SECTION -->
+    <section class="category-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Shop by Category</h2>
+                <p>Explore products by your favorite categories.</p>
+            </div>
+
+            <a asp-page="/Categories" class="view-all-link">
+                View All
+                <i data-lucide="arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="category-grid">
+
+            @if (Model.Categories.Count > 0)
+            {
+                @foreach (var category in Model.Categories)
+                {
+                    <a asp-page="/Index"
+                       asp-route-CategoryId="@category.Id"
+                       class="category-card">
+
+                        <div class="category-image">
+                            <i data-lucide="@Model.GetCategoryIcon(category.Name)"></i>
+                        </div>
+
+                        <span>@category.Name</span>
+                    </a>
+                }
+            }
+            else
+            {
+                <a asp-page="/Categories" class="category-card">
+                    <div class="category-image">
+                        <i data-lucide="grid-2x2"></i>
+                    </div>
+                    <span>Explore Categories</span>
+                </a>
+            }
+
+        </div>
+
+    </section>
+
+
+    <!-- PROMOTIONAL BANNERS -->
+    <section class="promo-grid">
+
+        <div class="promo-card promo-purple">
+
+            <div class="promo-copy">
+                <span class="promo-label">Seasonal Collection</span>
+
+                <h2>
+                    Big Savings
+                    <br />
+                    This Season
+                </h2>
+
+                <p>Discover amazing products at great prices.</p>
+
+                <a href="#products" class="primary-button small-button">
+                    Shop Deals
+                    <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="promo-decoration">
+                <i data-lucide="laptop"></i>
+            </div>
+
+        </div>
+
+
+        <div class="promo-card promo-neutral">
+
+            <div class="promo-copy">
+                <span class="promo-label">New Collection</span>
+
+                <h2>
+                    Explore
+                    <br />
+                    The Best
+                </h2>
+
+                <p>Quality products. Better experience.</p>
+
+                <a href="#products" class="primary-button small-button">
+                    Shop Now
+                    <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="promo-decoration">
+                <i data-lucide="headphones"></i>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PRODUCTS SECTION -->
+    <section class="products-section" id="products">
+
+        <div class="section-heading">
+
+            <div>
+                <h2>
+                    @if (!string.IsNullOrWhiteSpace(Model.Search))
+                    {
+                        <text>Search Results</text>
+                    }
+                    else if (Model.CategoryId.HasValue)
+                    {
+                        <text>Category Products</text>
+                    }
+                    else
+                    {
+                        <text>Trending Products</text>
+                    }
+                </h2>
+
+                <p>Find something you'll love.</p>
+            </div>
+
+            <a asp-page="/Index" class="view-all-link">
+                View All Products
+                <i data-lucide="arrow-right"></i>
+            </a>
+
+        </div>
+
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="store-alert">
+                @Model.ErrorMessage
+            </div>
+        }
+
+        @if (TempData["SuccessMessage"] is string success)
+        {
+            <div class="shopping-success">
+                @success
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] is string error)
+        {
+            <div class="shopping-alert">
+                @error
+            </div>
+        }
+
+
+        @if (Model.Products.Count > 0)
+        {
+            <div class="product-grid">
+
+                @foreach (var product in Model.Products)
+                {
+                    <article class="product-card">
+
+                        <div class="product-image">
+
+                            <button type="button"
+                                    class="wishlist-button"
+                                    aria-label="Wishlist">
+                                <i data-lucide="heart"></i>
+                            </button>
+
+                            @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                            {
+                                <img src="@Model.GetImageUrl(product.ImageUrl)"
+                                     alt="@product.Name"
+                                     loading="lazy"
+                                     onerror="this.style.display='none'; this.nextElementSibling.hidden=false;" />
+                            }
+
+                            <div class="product-no-image" hidden>
+                                <i data-lucide="image"></i>
+                                <span>Image unavailable</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="product-information">
+
+                            <span class="product-category">
+                                @(string.IsNullOrWhiteSpace(product.CategoryName)
+                                    ? "General"
+                                    : product.CategoryName)
+                            </span>
+
+                            <h3 title="@product.Name">
+                                @product.Name
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <span class="product-price">
+                                    ৳ @product.Price.ToString("N0")
+                                </span>
+
+                                <span class="product-stock @(product.StockQuantity <= 0 ? "out-of-stock" : "")">
+                                    @(product.StockQuantity > 0
+                                        ? "In Stock"
+                                        : "Out of Stock")
+                                </span>
+
+                            </div>
+
+                            <form method="post"
+                                  asp-page-handler="AddToCart"
+                                  asp-route-productId="@product.Id">
+
+                                <button type="submit"
+                                        class="add-cart-button"
+                                        disabled="@(product.StockQuantity <= 0)">
+
+                                    <i data-lucide="shopping-cart"></i>
+                                    Add to Cart
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </article>
+                }
+
+            </div>
+        }
+        else if (string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="empty-products">
+
+                <i data-lucide="package-open"></i>
+
+                <h3>No products available</h3>
+
+                <p>
+                    We are adding new products.
+                    Please check back soon.
+                </p>
+
+                <a asp-page="/Index" class="primary-button">
+                    Browse All Products
+                </a>
+
+            </div>
+        }
+
+    </section>
+
+</div>

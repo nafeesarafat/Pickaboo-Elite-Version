@@ -1,0 +1,47 @@
+﻿@page
+@model NewProject.UI.Pages.CategoriesModel
+
+@{
+    ViewData["Title"] = "Categories";
+    Layout = "_StoreLayout";
+}
+
+<div class="shopping-page">
+
+    <div class="shopping-heading">
+        <h1>Shop by Category</h1>
+        <p>Explore our product collections.</p>
+    </div>
+
+    <div class="shopping-grid">
+
+        @foreach (var category in Model.Categories)
+        {
+            <a asp-page="/Index"
+               asp-route-categoryId="@category.Id"
+               asp-fragment="products"
+               class="shopping-card">
+
+                <div class="shopping-card-icon">
+                    <i data-lucide="grid-2x2"></i>
+                </div>
+
+                <h3>@category.Name</h3>
+
+                <p>
+                    @(category.Description ?? "Explore products")
+                </p>
+
+                <span>Explore products →</span>
+
+            </a>
+        }
+
+    </div>
+
+    @if (!Model.Categories.Any())
+    {
+        <p>No categories available.</p>
+    }
+
+</div>

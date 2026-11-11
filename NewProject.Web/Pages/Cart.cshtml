@@ -1,0 +1,240 @@
+﻿@page
+@model NewProject.UI.Pages.CartModel
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+    Layout = "_StoreLayout";
+}
+
+<div class="shopping-shell">
+
+    <div class="shopping-breadcrumb">
+        <a asp-page="/Index">Home</a>
+        <span>/</span>
+        <span>Shopping Cart</span>
+    </div>
+
+    <div class="shopping-title-row">
+        <div>
+            <span class="shopping-eyebrow">YOUR SHOPPING BAG</span>
+            <h1>Shopping Cart</h1>
+            <p>Review your items before proceeding to checkout.</p>
+        </div>
+
+        <a asp-page="/Index" class="continue-shopping">
+            <i data-lucide="arrow-left"></i>
+            Continue Shopping
+        </a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="shopping-notice error-notice">
+            <i data-lucide="alert-circle"></i>
+            @Model.ErrorMessage
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="shopping-notice error-notice">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (Model.Cart.Items.Any())
+    {
+        <div class="shopping-main-grid">
+
+            <section class="cart-panel">
+
+                <div class="cart-panel-header">
+                    <div>
+                        <h2>Your Items</h2>
+                        <p>@Model.Cart.Items.Count product(s) in your cart</p>
+                    </div>
+
+                    <span class="cart-items-count">
+                        @Model.Cart.Items.Sum(x => x.Quantity) Items
+                    </span>
+                </div>
+
+                @foreach (var item in Model.Cart.Items)
+                {
+                    <article class="cart-product-row">
+
+                        <div class="cart-product-photo">
+
+                            @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                            {
+                                <img src="@Model.GetImageUrl(item.ImageUrl)"
+                                     alt="@item.ProductName"
+                                     onerror="this.style.display='none'" />
+                            }
+                            else
+                            {
+                                <i data-lucide="package"></i>
+                            }
+
+                        </div>
+
+                        <div class="cart-product-details">
+
+                            <span class="cart-product-label">
+                                PICKABOO PRODUCT
+                            </span>
+
+                            <h3>@item.ProductName</h3>
+
+                            <p class="cart-unit-price">
+                                ৳ @item.UnitPrice.ToString("N2") / unit
+                            </p>
+
+                            <div class="cart-product-actions">
+
+                                <form method="post"
+                                      asp-page-handler="Remove">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@item.Id" />
+
+                                    <button type="submit"
+                                            class="cart-remove-button"
+                                            onclick="return confirm('Remove this product from your cart?')">
+
+                                        <i data-lucide="trash-2"></i>
+                                        Remove
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                        <div class="cart-quantity-column">
+
+                            <span>Quantity</span>
+
+                            <form method="post"
+                                  asp-page-handler="Update"
+                                  class="cart-quantity-form">
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.Id" />
+
+                                <input type="number"
+                                       name="quantity"
+                                       value="@item.Quantity"
+                                       min="1"
+                                       max="100"
+                                       aria-label="Quantity" />
+
+                                <button type="submit"
+                                        aria-label="Update quantity">
+                                    <i data-lucide="check"></i>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                        <div class="cart-item-total">
+
+                            <span>Subtotal</span>
+
+                            <strong>
+                                ৳ @item.Subtotal.ToString("N2")
+                            </strong>
+
+                        </div>
+
+                    </article>
+                }
+
+                <div class="cart-continue-bottom">
+                    <i data-lucide="shield-check"></i>
+                    Secure shopping experience with Pickaboo.
+                </div>
+
+            </section>
+
+
+            <aside class="shopping-summary">
+
+                <div class="summary-heading">
+                    <i data-lucide="receipt"></i>
+                    <h2>Order Summary</h2>
+                </div>
+
+                <div class="summary-detail">
+                    <span>Products</span>
+                    <strong>@Model.Cart.Items.Sum(x => x.Quantity)</strong>
+                </div>
+
+                <div class="summary-detail">
+                    <span>Subtotal</span>
+                    <strong>৳ @Model.Cart.Total.ToString("N2")</strong>
+                </div>
+
+                <div class="summary-detail">
+                    <span>Shipping</span>
+                    <span class="summary-muted">At checkout</span>
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-grand-total">
+                    <span>Estimated Total</span>
+                    <strong>৳ @Model.Cart.Total.ToString("N2")</strong>
+                </div>
+
+                <a asp-page="/Checkout"
+                   class="shopping-primary-button">
+
+                    Proceed to Checkout
+                    <i data-lucide="arrow-right"></i>
+
+                </a>
+
+                <div class="summary-security">
+                    <i data-lucide="lock-keyhole"></i>
+                    Your order information is secure.
+                </div>
+
+                <div class="summary-payment">
+                    <span>PAYMENT</span>
+                    <strong>Cash on Delivery</strong>
+                </div>
+
+            </aside>
+
+        </div>
+    }
+    else
+    {
+        <div class="shopping-empty-modern">
+
+            <div class="empty-cart-icon">
+                <i data-lucide="shopping-cart"></i>
+            </div>
+
+            <h2>Your cart is waiting for something special!</h2>
+
+            <p>
+                You haven't added any products yet.
+                Explore our collection and find something you love.
+            </p>
+
+            <a asp-page="/Index" class="shopping-primary-button empty-shop-button">
+                Explore Products
+                <i data-lucide="arrow-right"></i>
+            </a>
+
+        </div>
+    }
+
+</div>

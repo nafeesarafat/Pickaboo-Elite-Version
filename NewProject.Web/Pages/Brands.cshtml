@@ -1,0 +1,52 @@
+﻿@page
+@model NewProject.UI.Pages.BrandsModel
+
+@{
+    ViewData["Title"] = "Brands";
+    Layout = "_StoreLayout";
+}
+
+<div class="shopping-page">
+
+    <div class="shopping-heading">
+        <h1>Our Brands</h1>
+        <p>Discover products from popular brands.</p>
+    </div>
+
+    <div class="shopping-grid">
+
+        @foreach (var brand in Model.Brands)
+        {
+            <a asp-page="/Index"
+               asp-route-brandId="@brand.Id"
+               asp-fragment="products"
+               class="shopping-card">
+
+                @if (!string.IsNullOrWhiteSpace(brand.LogoUrl))
+                {
+                    <img src="@brand.LogoUrl"
+                         alt="@brand.Name"
+                         class="brand-logo" />
+                }
+                else
+                {
+                    <div class="shopping-card-icon">
+                        <i data-lucide="tag"></i>
+                    </div>
+                }
+
+                <h3>@brand.Name</h3>
+
+                <span>Explore products →</span>
+
+            </a>
+        }
+
+    </div>
+
+    @if (!Model.Brands.Any())
+    {
+        <p>No brands available.</p>
+    }
+
+</div>
